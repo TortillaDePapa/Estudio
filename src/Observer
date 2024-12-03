@@ -1,0 +1,118 @@
+import java.util.ArrayList;
+import java.util.List;
+
+interface Notificacion {
+    //Completa la interface, siguiendo la pauta dada, aquí.
+    void actualizar(Producto producto);
+}
+
+public class Producto {
+    private String nombre;
+    private int cantidad;
+
+    public Producto(String nombre, int cantidad) {
+        this.nombre = nombre;
+        this.cantidad = cantidad;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public int getCantidad() {
+        return cantidad;
+    }
+
+    public void setCantidad(int cantidad) {
+        this.cantidad = cantidad;
+    }
+}
+
+public class Inventario {
+ //Completa la clase, siguiendo la pauta dada, aquí.
+    private List<Notificacion> notificaciones = new ArrayList<>(); 
+    private List<Producto> productos = new ArrayList<>();
+    
+    public void agregarProducto(Producto producto) {
+        productos.add(producto);
+        notificar(producto);
+    }
+    
+    public void actualizarProducto(String nombre, int nuevaCantidad) {
+        for (Producto producto : productos) {
+            if (producto.getNombre().equals(nombre)) {
+                producto.setCantidad(nuevaCantidad);
+                notificar(producto);
+                break;
+            }
+        }
+    }
+    
+    public void agregarSuscriptor(Notificacion notificacion) {
+        notificaciones.add(notificacion);
+    }
+    
+    public void eliminarSuscriptor(Notificacion notificacion) {
+        notificaciones.remove(notificacion);
+    }
+    
+    private void notificar(Producto producto) {
+        for (Notificacion notificacion : notificaciones) {
+            notificacion.actualizar(producto);
+        }
+    }
+}
+
+public class NotificacionCorreo implements Notificacion {
+    private String email;
+
+    public NotificacionCorreo(String email) {
+        this.email = email;
+    }
+
+    @Override
+    public void actualizar(Producto producto) {
+        System.out.println("Enviando correo a " + email + ": El producto " + producto.getNombre() +
+                " tiene una nueva cantidad de " + producto.getCantidad() + " unidades.");
+    }
+}
+
+public class NotificacionSMS implements Notificacion {
+    private String numeroTelefono;
+
+    public NotificacionSMS(String numeroTelefono) {
+        this.numeroTelefono = numeroTelefono;
+    }
+
+    @Override
+    public void actualizar(Producto producto) {
+        System.out.println("Enviando SMS a " + numeroTelefono + ": El producto " + producto.getNombre() +
+                " tiene una nueva cantidad de " + producto.getCantidad() + " unidades.");
+    }
+}
+
+public class NotificacionPantallaTienda implements Notificacion {
+    @Override
+    public void actualizar(Producto producto) {
+        System.out.println("Pantalla tienda: El producto " + producto.getNombre() +
+                " se ha actualizado con " + producto.getCantidad() + " unidades.");
+    }
+}
+
+public class NotificacionAlertaStockBajo implements Notificacion {
+    @Override
+    public void actualizar(Producto producto) {
+        if (producto.getCantidad() < 5) {
+            System.out.println("¡Alerta! El producto " + producto.getNombre() +
+                    " tiene un stock bajo de " + producto.getCantidad() + " unidades.");
+        }
+    }
+}
+
+public class NotificacionReporte implements Notificacion {
+    @Override
+    public void actualizar(Producto producto) {
+        System.out.println("Generando reporte: Producto " + producto.getNombre() +
+                " actualizado a " + producto.getCantidad() + " unidades.");
+    }
+}
